@@ -10,7 +10,6 @@ class EvHandler:
     @_debounce.Debounce(0.5)
     def dispatch(self, ev):
         if _fileFilter.filterFunc(ev):
-            print(ev)
             _requests.do(ev.src_path)
 
 
