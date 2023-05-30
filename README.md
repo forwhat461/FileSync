@@ -3,39 +3,41 @@
 
 ## 说明
 在两个电脑或服务器（服务器还没测试）上
-一台电脑作为客户端，一台是服务端
-客户端代码会监听文件变化，改变后与服务器对比MD5值，不同则替换
+分别启动此代码
+程序会监听文件变化，改变后与对方对比MD5值，不同则替换
 TODO 考虑添加对文件的按段分割功能
 
 
 ## 使用方法
-咱们简单的假设你要在同一台电脑上的不同路径下搞客户端和服务端
-客户端就是<code>F:/Documents</code>
-服务端则是<code>D:/Documents</code>
-首先需要在客户端和服务端下添加<code>fsync.conf</code>文件
+咱们简单的假设你要在同一台电脑上的不同路径下使用
+一侧是<code>F:/Documents</code>
+另一侧是<code>D:/Documents</code>
+首先需要在两个路径下添加<code>fsync.conf</code>文件
 也就是<code>F[D]:/Documents/fsync.conf</code>
 内容为json格式字符串，重点包含监听的端口与服务器使用的ip
 ```json
 {
     "target": "127.0.0.1",
+    "target_port": 56722,
     "port": 56721,
     "seperator": "#fs#"
 }
 ```
-target为仅客户端client读取的字段，值也就是服务端ip
-port字段客户端服务端都必须，表达端口号
+target是对方的ip
+target_port为对方端口
+port字段为此代码监听的端口
 TODO seperator表达使用什么样的字符串来对文件分段
 之后在命令行
-client文件夹里有个client.py代码，加上你要监听的路径，像这样
+src文件夹里有个main.py代码，加上你要监听的路径，像这样
 ```bash
-client/client.py F:/Documents
+main/main.py F:/Documents
 ```
-server文件夹的server.py也是一样，后面加上你要放文件的路径
+另一侧也是一样，后面加上你监听的路径
 ```bash
-server/server.py D:/Documents
+main/main.py D:/Documents
 ```
 具体代码所在位置可以随意，不会影响程序运行（别放回收站）
-好了。现在你可以尝试修改客户端监听的路径下的任意文件，然后看看效果了
+好了。现在你可以尝试修改路径下的任意文件，然后看看效果了
 
 ### 附
 目标是希望不产生太多冗余文件，所以没有历史回退这种功能（直接用git吧）

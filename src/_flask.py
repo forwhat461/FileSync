@@ -18,9 +18,11 @@ def init(_global_config):
 @app.route("/", methods=["POST", "GET"])
 def api():
     global global_config
-    form_data = request.get_json()
+    try:
+        form_data = request.get_json()
+    except: 
+        return json.dumps(global_config)
     needReplace = 0
-    if not form_data.get("fpath"): return
     fpath = Path(f"{global_config['path']}/{form_data['fpath']}")
     if(form_data.get('replace')):
         if(not fpath.parent.is_dir()):
@@ -41,4 +43,4 @@ def api():
     return json.dumps({"state": True, "data": [needReplace]})
 
 def main():
-    app.run(debug=True, host="0.0.0.0", port=global_config["port"])
+    app.run(host="0.0.0.0", port=global_config["port"])
